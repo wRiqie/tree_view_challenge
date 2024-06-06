@@ -1,3 +1,5 @@
+import 'package:tree_view_challenge/app/core/values/app_images.dart';
+
 class AssetModel {
   final String id;
   final String? locationId;
@@ -30,5 +32,9 @@ class AssetModel {
       gatewayId: map['gatewayId'],
       sensorId: map['sensorId'],
     );
+  }
+
+  String getIcon() {
+    return sensorType != null ? AppImages.componentCube : AppImages.cube;
   }
 }
