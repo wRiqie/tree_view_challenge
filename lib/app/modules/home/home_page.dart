@@ -49,7 +49,7 @@ class HomePage extends GetView<HomeController> {
                               color: Colors.white,
                             ),
                             title: Text(
-                              company.name,
+                              '${company.name} Unit',
                               style: const TextStyle(color: Colors.white),
                             ),
                           );

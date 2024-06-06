@@ -8,6 +8,7 @@ import 'package:tree_view_challenge/app/data/models/args/assets_args.dart';
 import 'package:tree_view_challenge/app/data/models/asset_model.dart';
 import 'package:tree_view_challenge/app/data/repository/asset_repository.dart';
 import 'package:tree_view_challenge/app/data/repository/location_repository.dart';
+import 'package:tree_view_challenge/app/widgets/tree_node_widget.dart';
 
 import '../../core/values/app_images.dart';
 import '../../data/models/location_model.dart';
@@ -16,7 +17,7 @@ import '../../data/models/tree_node_model.dart';
 class AssetsController extends GetxController {
   List<AssetModel> assets = [];
   List<LocationModel> locations = [];
-  final nodes = RxList<Widget>();
+  final nodes = RxList<TreeNode>();
 
   final isLoading = RxBool(false);
 
@@ -67,8 +68,11 @@ class AssetsController extends GetxController {
   }
 
   void _buildTree() {
-    List<Widget> nodes = [];
+    List<TreeNode> nodes = [];
     Map<String, TreeNodeModel> nodeMap = {};
+
+    locations.sort((a, b) => b.name.compareTo(a.name));
+    assets.sort((a, b) => b.name.compareTo(a.name));
 
     // Criar map de root
     for (var location in locations) {
@@ -117,36 +121,21 @@ class AssetsController extends GetxController {
     this.nodes.value = nodes;
   }
 
-  Widget _buildNode(TreeNodeModel treeNode) {
+  TreeNode _buildNode(TreeNodeModel treeNode) {
     var node = treeNode.node;
     if (node is AssetModel) {
-      return ExpansionTile(
-        title: Row(
-          children: [
-            SvgPicture.asset(node.getIcon()),
-            const SizedBox(
-              width: 10,
-            ),
-            Expanded(child: Text(node.name)),
-          ],
-        ),
+      return TreeNode(
+        title: node.name,
+        leading: SvgPicture.asset(node.getIcon()),
         children: treeNode.children.map((e) => _buildNode(e)).toList(),
       );
-    } else if (node is LocationModel) {
-      return ExpansionTile(
-        title: Row(
-          children: [
-            SvgPicture.asset(AppImages.pin),
-            const SizedBox(
-              width: 10,
-            ),
-            Expanded(child: Text(node.name)),
-          ],
-        ),
+    } else {
+      return TreeNode(
+        title: node.name,
+        leading: SvgPicture.asset(AppImages.pin),
         children: treeNode.children.map((e) => _buildNode(e)).toList(),
       );
     }
-    return const SizedBox();
   }
 
   void _searchListener() {

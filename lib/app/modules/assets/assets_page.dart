@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tree_view_challenge/app/widgets/empty_placeholder_widget.dart';
+import 'package:tree_view_challenge/app/widgets/tree_view_widget.dart';
 
 import 'assets_controller.dart';
 
@@ -56,17 +57,16 @@ class AssetsPage extends GetView<AssetsController> {
                   if (!controller.isLoading.value) {
                     if (controller.nodes.isNotEmpty) {
                       return SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 18),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              ...controller.nodes,
-                              const SizedBox(
-                                height: 30,
-                              ),
-                            ],
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            TreeViewWidget(
+                              nodes: controller.nodes,
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                          ],
                         ),
                       );
                     } else {
