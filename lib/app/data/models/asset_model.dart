@@ -39,7 +39,17 @@ class AssetModel {
     );
   }
 
-  String getIcon() {
+  String getLeadingIcon() {
     return sensorType != null ? AppImages.componentCube : AppImages.cube;
+  }
+
+  String? getTrailingIcon() {
+    if (sensorType == null) return null;
+    if (sensorType!.isEnergy) {
+      return AppImages.bolt;
+    } else if (status?.isAlert ?? false) {
+      return AppImages.point;
+    }
+    return null;
   }
 }

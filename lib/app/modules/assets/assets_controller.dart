@@ -15,6 +15,7 @@ class AssetsController extends GetxController {
   List<AssetModel> assets = [];
   List<LocationModel> locations = [];
   final nodes = RxList<TreeNodeModel>();
+  final filteredNodes = RxList<TreeNodeModel>();
 
   final isLoading = RxBool(false);
 
@@ -25,6 +26,13 @@ class AssetsController extends GetxController {
 
   Timer? _debounceTimer;
   final searchCtrl = TextEditingController();
+
+  final isFilteringEnergy = RxBool(false);
+  final isFilteringCritical = RxBool(false);
+
+  bool get isFiltering =>
+      isFilteringEnergy.isTrue || isFilteringCritical.isTrue || isSearching;
+  bool get isSearching => searchCtrl.text.isNotEmpty;
 
   AssetsController(this._assetRepository, this._locationRepository);
 
@@ -64,7 +72,30 @@ class AssetsController extends GetxController {
     }
   }
 
+  void toggleFilterEnergy() {
+    isFilteringCritical.value = false;
+    isFilteringEnergy.value = !isFilteringEnergy.value;
+
+    if (isFilteringEnergy.isTrue || isSearching) {
+      _filter();
+    } else {
+      filteredNodes.clear();
+    }
+  }
+
+  void toggleFilterCritical() {
+    isFilteringEnergy.value = false;
+    isFilteringCritical.value = !isFilteringCritical.value;
+
+    if (isFilteringCritical.isTrue || isSearching) {
+      _filter();
+    } else {
+      filteredNodes.clear();
+    }
+  }
+
   void _buildTree() {
+    filteredNodes.clear();
     Map<String, TreeNodeModel> nodeMap = {};
 
     // Create map of all items [Locations e assets]
@@ -107,16 +138,36 @@ class AssetsController extends GetxController {
     }
   }
 
-  List<TreeNodeModel> _search(String searchTerm) {
+  void _filter() {
+    final query = searchCtrl.text.trim().isNotEmpty ? searchCtrl.text : null;
     Set<TreeNodeModel> results = {};
 
-    void searchTree(TreeNodeModel node, Set<TreeNodeModel> currentPath) {
-      if (node.title.toLowerCase().contains(searchTerm.toLowerCase())) {
-        results.addAll(currentPath);
-        results.add(node);
+    void searchTree(TreeNodeModel treeNode, Set<TreeNodeModel> currentPath) {
+      var node = treeNode.node;
+      bool matchesSearch = query != null &&
+          treeNode.title.toLowerCase().contains(query.toLowerCase());
+      bool matchesFilter = (isFilteringCritical.isTrue &&
+              (node is AssetModel && (node.status?.isAlert ?? false))) ||
+          (isFilteringEnergy.isTrue &&
+              (node is AssetModel && (node.sensorType?.isEnergy ?? false)));
+
+      bool shouldInclude = true;
+
+      if (query != null) {
+        shouldInclude = matchesSearch;
       }
-      for (var child in node.children) {
-        var newPath = {...currentPath, node};
+
+      if (shouldInclude &&
+          (isFilteringCritical.isTrue || isFilteringEnergy.isTrue)) {
+        shouldInclude = matchesFilter;
+      }
+
+      if (shouldInclude) {
+        results.addAll(currentPath);
+        results.add(treeNode);
+      }
+      for (var child in treeNode.children) {
+        var newPath = {...currentPath, treeNode};
         searchTree(child, newPath);
       }
     }
@@ -130,35 +181,29 @@ class AssetsController extends GetxController {
     List<TreeNodeModel> filterNodes(TreeNodeModel node) {
       if (results.contains(node)) {
         return [
-          TreeNodeModel(
-            node: node,
-            title: node.title,
-          )..children = node.children.expand(filterNodes).toList(),
+          node.copyWith(
+              isExpanded: true,
+              children: node.children.expand(filterNodes).toList())
         ];
       }
       var relevantChildren = node.children.expand(filterNodes).toList();
       if (relevantChildren.isNotEmpty) {
-        return [
-          TreeNodeModel(
-            node: node,
-            title: node.title,
-          )..children = relevantChildren
-        ];
+        return [node.copyWith(isExpanded: true, children: relevantChildren)];
       }
       return [];
     }
 
-    nodes.value = nodes.expand(filterNodes).toList();
-    return nodes.expand(filterNodes).toList();
+    var a = nodes.expand(filterNodes).toList();
+    filteredNodes.value = a;
   }
 
   void _searchListener() {
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 1500), () {
-      if (searchCtrl.text.trim().isNotEmpty) {
-        _search(searchCtrl.text);
+      if (searchCtrl.text.trim().isNotEmpty || isFiltering) {
+        _filter();
       } else {
-        _buildTree();
+        filteredNodes.clear();
       }
     });
   }

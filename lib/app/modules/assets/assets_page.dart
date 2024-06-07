@@ -20,9 +20,19 @@ class AssetsPage extends GetView<AssetsController> {
                 padding: const EdgeInsets.fromLTRB(18, 20, 18, 6),
                 child: TextField(
                   controller: controller.searchCtrl,
-                  decoration: const InputDecoration(
-                    prefixIcon: Icon(Icons.search),
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.search),
                     hintText: 'Buscar Ativo ou Local',
+                    suffixIcon: controller.searchCtrl.text.isNotEmpty
+                        ? IconButton(
+                            onPressed: () {
+                              controller.searchCtrl.clear();
+                            },
+                            icon: const Icon(
+                              Icons.clear,
+                            ),
+                          )
+                        : null,
                   ),
                 ),
               ),
@@ -33,16 +43,24 @@ class AssetsPage extends GetView<AssetsController> {
                 padding: const EdgeInsets.symmetric(horizontal: 18),
                 child: Row(
                   children: [
-                    _buildOption(
-                      Icons.bolt_outlined,
-                      'Sensor de Energia',
+                    Obx(
+                      () => _buildOption(
+                        icon: Icons.bolt_outlined,
+                        title: 'Sensor de Energia',
+                        isSelected: controller.isFilteringEnergy.value,
+                        onTap: () => controller.toggleFilterEnergy(),
+                      ),
                     ),
                     const SizedBox(
                       width: 10,
                     ),
-                    _buildOption(
-                      Icons.info_outline,
-                      'Crítico',
+                    Obx(
+                      () => _buildOption(
+                        icon: Icons.info_outline,
+                        title: 'Crítico',
+                        isSelected: controller.isFilteringCritical.value,
+                        onTap: () => controller.toggleFilterCritical(),
+                      ),
                     ),
                   ],
                 ),
@@ -57,16 +75,26 @@ class AssetsPage extends GetView<AssetsController> {
               Expanded(
                 child: Obx(() {
                   if (!controller.isLoading.value) {
-                    if (controller.nodes.isNotEmpty) {
-                      return ListView.builder(
-                        itemCount: controller.nodes.length,
-                        itemBuilder: (context, index) {
-                          var treeNode = controller.nodes[index];
-                          return TreeNodeWidget(
-                            treeNode: treeNode,
-                            indent: 20,
-                          );
-                        },
+                    if ((controller.nodes.isNotEmpty &&
+                            !controller.isFiltering) ||
+                        (controller.filteredNodes.isNotEmpty &&
+                            controller.isFiltering)) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 30),
+                        child: ListView.builder(
+                          itemCount: controller.isFiltering
+                              ? controller.filteredNodes.length
+                              : controller.nodes.length,
+                          itemBuilder: (context, index) {
+                            var treeNode = controller.isFiltering
+                                ? controller.filteredNodes[index]
+                                : controller.nodes[index];
+                            return TreeNodeWidget(
+                              treeNode: treeNode,
+                              indent: 20,
+                            );
+                          },
+                        ),
                       );
                     } else {
                       return const Center(
@@ -96,26 +124,36 @@ class AssetsPage extends GetView<AssetsController> {
     );
   }
 
-  Widget _buildOption(IconData icon, String title) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-      decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade400),
-          borderRadius: BorderRadius.circular(3)),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            color: Colors.grey.shade500,
-          ),
-          const SizedBox(
-            width: 8,
-          ),
-          Text(
-            title,
-            style: TextStyle(color: Colors.grey.shade600),
-          ),
-        ],
+  Widget _buildOption(
+      {required IconData icon,
+      required String title,
+      required bool isSelected,
+      required VoidCallback onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+        decoration: BoxDecoration(
+            color: isSelected ? Colors.blue : null,
+            border: Border.all(
+                color: isSelected ? Colors.blue : Colors.grey.shade400),
+            borderRadius: BorderRadius.circular(3)),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? Colors.white : Colors.grey.shade500,
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            Text(
+              title,
+              style: TextStyle(
+                  color: isSelected ? Colors.white : Colors.grey.shade600),
+            ),
+          ],
+        ),
       ),
     );
   }

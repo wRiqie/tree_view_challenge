@@ -14,14 +14,16 @@ class TreeNodeWidget extends StatefulWidget {
 }
 
 class _TreeNodeWidgetState extends State<TreeNodeWidget> {
-  bool isExpanded = false;
-
   @override
   Widget build(BuildContext context) {
     TreeNodeModel treeNode = widget.treeNode;
     bool hasChildren = treeNode.children.isNotEmpty;
-    String leadingIcon =
-        treeNode.node is AssetModel ? treeNode.node.getIcon() : AppImages.pin;
+    String leadingIcon = treeNode.node is AssetModel
+        ? (treeNode.node as AssetModel).getLeadingIcon()
+        : AppImages.pin;
+    String? trailingIcon = treeNode.node is AssetModel
+        ? (treeNode.node as AssetModel).getTrailingIcon()
+        : null;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -29,33 +31,51 @@ class _TreeNodeWidgetState extends State<TreeNodeWidget> {
         ListTile(
           contentPadding: EdgeInsets.only(left: widget.indent),
           onTap: () {
+            var treeNode = widget.treeNode;
             setState(() {
-              isExpanded = !isExpanded;
+              treeNode.isExpanded = !treeNode.isExpanded;
             });
           },
           leading: hasChildren
               ? Icon(
-                  isExpanded ? Icons.expand_less : Icons.expand_more,
+                  treeNode.isExpanded ? Icons.expand_less : Icons.expand_more,
                   color: !hasChildren ? Colors.grey.shade400 : null,
                 )
               : const SizedBox(),
           title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SvgPicture.asset(leadingIcon),
-              const SizedBox(
-                width: 8,
-              ),
+              const SizedBox(width: 8), // Espaço entre o ícone e o texto
               Expanded(
-                  child: Text(
-                widget.treeNode.title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              )),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width - 100),
+                        child: Text(
+                          widget.treeNode.title,
+                        ),
+                      ),
+                    ),
+                    trailingIcon != null
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const SizedBox(width: 8),
+                              SvgPicture.asset(trailingIcon),
+                            ],
+                          )
+                        : const SizedBox(),
+                  ],
+                ),
+              ),
             ],
           ),
-          // trailing: widget.treeNode.trailing,
         ),
-        if (hasChildren && isExpanded)
+        if (hasChildren && treeNode.isExpanded)
           ...widget.treeNode.children.map(
             (e) => TreeNodeWidget(treeNode: e, indent: widget.indent + 20),
           )
