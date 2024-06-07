@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:tree_view_challenge/app/core/values/app_images.dart';
-import 'package:tree_view_challenge/app/data/models/asset_model.dart';
-import 'package:tree_view_challenge/app/data/models/tree_node_model.dart';
+
+import '../core/values/app_images.dart';
+import '../data/models/asset_model.dart';
+import '../data/models/tree_node_model.dart';
 
 class TreeNodeWidget extends StatefulWidget {
   final TreeNodeModel treeNode;

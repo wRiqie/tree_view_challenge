@@ -1,6 +1,6 @@
-import 'package:tree_view_challenge/app/data/data_sources/asset/asset_data_source.dart';
-import 'package:tree_view_challenge/app/data/models/asset_model.dart';
-import 'package:tree_view_challenge/app/data/services/http/http_service.dart';
+import '../../models/asset_model.dart';
+import '../../services/http/http_service.dart';
+import 'asset_data_source.dart';
 
 class AssetDataSourceApiImp implements AssetDataSource {
   final HttpService _httpService;

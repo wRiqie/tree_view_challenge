@@ -1,6 +1,6 @@
-import 'package:tree_view_challenge/app/data/data_sources/company/company_data_source.dart';
-import 'package:tree_view_challenge/app/data/models/company_model.dart';
-import 'package:tree_view_challenge/app/data/services/http/http_service.dart';
+import '../../models/company_model.dart';
+import '../../services/http/http_service.dart';
+import 'company_data_source.dart';
 
 class CompanyDataSourceApiImp implements CompanyDataSource {
   final HttpService _httpService;

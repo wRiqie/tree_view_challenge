@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tree_view_challenge/app/core/theme/app_theme.dart';
-import 'package:tree_view_challenge/app_binding.dart';
-import 'package:tree_view_challenge/routes/app_pages.dart';
+
+import 'app/core/theme/app_theme.dart';
+import 'app_binding.dart';
+import 'routes/app_pages.dart';
 
 class AppWidget extends StatelessWidget {
   const AppWidget({super.key});

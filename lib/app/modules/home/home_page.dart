@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tree_view_challenge/app/core/values/app_images.dart';
 
 import '../../../routes/app_pages.dart';
+import '../../core/values/app_images.dart';
 import '../../data/models/args/assets_args.dart';
 import 'home_controller.dart';
 

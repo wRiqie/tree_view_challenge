@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
-import 'package:tree_view_challenge/app/modules/assets/assets_binding.dart';
-import 'package:tree_view_challenge/app/modules/assets/assets_page.dart';
-import 'package:tree_view_challenge/app/modules/home/home_binding.dart';
-import 'package:tree_view_challenge/app/modules/home/home_page.dart';
+
+import '../app/modules/assets/assets_binding.dart';
+import '../app/modules/assets/assets_page.dart';
+import '../app/modules/home/home_binding.dart';
+import '../app/modules/home/home_page.dart';
 
 part './app_routes.dart';
 

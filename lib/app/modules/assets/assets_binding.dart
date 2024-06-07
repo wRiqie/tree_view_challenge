@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:tree_view_challenge/app/data/repository/asset_repository.dart';
-import 'package:tree_view_challenge/app/data/repository/location_repository.dart';
 
+import '../../data/repository/asset_repository.dart';
+import '../../data/repository/location_repository.dart';
 import 'assets_controller.dart';
 
 class AssetsBinding implements Bindings {

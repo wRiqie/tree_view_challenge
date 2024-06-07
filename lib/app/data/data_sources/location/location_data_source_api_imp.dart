@@ -1,6 +1,6 @@
-import 'package:tree_view_challenge/app/data/data_sources/location/location_data_source.dart';
-import 'package:tree_view_challenge/app/data/models/location_model.dart';
-import 'package:tree_view_challenge/app/data/services/http/http_service.dart';
+import '../../models/location_model.dart';
+import '../../services/http/http_service.dart';
+import 'location_data_source.dart';
 
 class LocationDataSourceApiImp implements LocationDataSource {
   final HttpService _httpService;

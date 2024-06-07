@@ -1,6 +1,6 @@
-import 'package:tree_view_challenge/app/core/values/app_images.dart';
-import 'package:tree_view_challenge/app/data/enums/sensor_type_enum.dart';
-import 'package:tree_view_challenge/app/data/enums/status_enum.dart';
+import '../../core/values/app_images.dart';
+import '../enums/sensor_type_enum.dart';
+import '../enums/status_enum.dart';
 
 class AssetModel {
   final String id;

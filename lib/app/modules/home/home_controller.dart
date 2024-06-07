@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
-import 'package:tree_view_challenge/app/core/values/constants.dart';
-import 'package:tree_view_challenge/app/core/values/snackbars.dart';
-import 'package:tree_view_challenge/app/data/models/company_model.dart';
-import 'package:tree_view_challenge/app/data/repository/company_repository.dart';
+
+import '../../core/values/constants.dart';
+import '../../core/values/snackbars.dart';
+import '../../data/models/company_model.dart';
+import '../../data/repository/company_repository.dart';
 
 class HomeController extends GetxController {
   final CompanyRepository _companyRepository;

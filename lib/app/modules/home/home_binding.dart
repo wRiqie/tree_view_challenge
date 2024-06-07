@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:tree_view_challenge/app/data/repository/company_repository.dart';
 
+import '../../data/repository/company_repository.dart';
 import 'home_controller.dart';
 
 class HomeBinding implements Bindings {

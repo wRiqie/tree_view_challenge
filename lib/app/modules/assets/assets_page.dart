@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tree_view_challenge/app/widgets/empty_placeholder_widget.dart';
-import 'package:tree_view_challenge/app/widgets/search_field_widget.dart';
-import 'package:tree_view_challenge/app/widgets/tree_node_widget.dart';
 
+import '../../widgets/empty_placeholder_widget.dart';
+import '../../widgets/search_field_widget.dart';
+import '../../widgets/tree_node_widget.dart';
 import 'assets_controller.dart';
 
 class AssetsPage extends GetView<AssetsController> {

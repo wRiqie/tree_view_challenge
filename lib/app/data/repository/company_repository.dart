@@ -1,7 +1,7 @@
-import 'package:tree_view_challenge/app/data/data_sources/company/company_data_source.dart';
-import 'package:tree_view_challenge/app/data/models/company_model.dart';
-import 'package:tree_view_challenge/app/data/models/default_response_model.dart';
-import 'package:tree_view_challenge/app/data/services/execute_service.dart';
+import '../data_sources/company/company_data_source.dart';
+import '../models/company_model.dart';
+import '../models/default_response_model.dart';
+import '../services/execute_service.dart';
 
 class CompanyRepository {
   final CompanyDataSource _companyDataSource;
