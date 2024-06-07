@@ -46,8 +46,8 @@ class AssetsController extends GetxController {
     isLoading.value = true;
     await _loadAssets();
     await _loadLocations();
-    _buildTree();
     isLoading.value = false;
+    _buildTree();
   }
 
   Future<void> _loadAssets() async {
@@ -65,11 +65,7 @@ class AssetsController extends GetxController {
   }
 
   void _buildTree() {
-    List<TreeNodeModel> treeNodes = [];
     Map<String, TreeNodeModel> nodeMap = {};
-
-    locations.sort((a, b) => b.name.compareTo(a.name));
-    assets.sort((a, b) => b.name.compareTo(a.name));
 
     // Create map of all items [Locations e assets]
     for (var location in locations) {
@@ -94,11 +90,8 @@ class AssetsController extends GetxController {
       }
     }
 
-    // Transform model list in widget list
+    // Add to list
     nodes.clear();
-    // for (var node in roots) {
-    //   treeNodes.add(_buildNode(node));
-    // }
     nodes.value = roots;
   }
 
@@ -113,23 +106,6 @@ class AssetsController extends GetxController {
       roots.add(treeNode);
     }
   }
-
-  // TreeNode _buildNode(TreeNodeModel treeNode) {
-  //   var node = treeNode.node;
-  //   if (node is AssetModel) {
-  //     return TreeNode(
-  //       title: node.name,
-  //       leading: SvgPicture.asset(node.getIcon()),
-  //       children: treeNode.children.map((e) => _buildNode(e)).toList(),
-  //     );
-  //   } else {
-  //     return TreeNode(
-  //       title: node.name,
-  //       leading: SvgPicture.asset(AppImages.pin),
-  //       children: treeNode.children.map((e) => _buildNode(e)).toList(),
-  //     );
-  //   }
-  // }
 
   void _searchListener() {
     _debounceTimer?.cancel();

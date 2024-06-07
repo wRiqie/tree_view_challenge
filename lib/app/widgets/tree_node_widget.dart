@@ -1,19 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:tree_view_challenge/app/core/values/app_images.dart';
+import 'package:tree_view_challenge/app/data/models/asset_model.dart';
 import 'package:tree_view_challenge/app/data/models/tree_node_model.dart';
-
-class TreeNode {
-  final Widget? leading;
-  final Widget? trailing;
-  final String title;
-  final List<TreeNode> children;
-
-  TreeNode({
-    this.leading,
-    this.trailing,
-    required this.title,
-    this.children = const [],
-  });
-}
 
 class TreeNodeWidget extends StatefulWidget {
   final TreeNodeModel treeNode;
@@ -29,7 +18,10 @@ class _TreeNodeWidgetState extends State<TreeNodeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    bool hasChildren = widget.treeNode.children.isNotEmpty;
+    TreeNodeModel treeNode = widget.treeNode;
+    bool hasChildren = treeNode.children.isNotEmpty;
+    String leadingIcon =
+        treeNode.node is AssetModel ? treeNode.node.getIcon() : AppImages.pin;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -49,7 +41,7 @@ class _TreeNodeWidgetState extends State<TreeNodeWidget> {
               : const SizedBox(),
           title: Row(
             children: [
-              widget.treeNode.leading ?? const SizedBox(),
+              SvgPicture.asset(leadingIcon),
               const SizedBox(
                 width: 8,
               ),
