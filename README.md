@@ -29,5 +29,9 @@ This app was developed as part of a challenge. The challenge involved creating a
 
 5. Still in the terminal, run the command `flutter run` to run the project
 
+## Improves if i had more time
+- I would improve the ui, probably creating a own figma prototype
+- I would implement unit tests
+
 ## Links
 - __App Video__: https://youtube.com/shorts/rtkHwIkvUhQ
