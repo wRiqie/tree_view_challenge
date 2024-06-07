@@ -1,32 +1,70 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-class SearchFieldWidget extends StatefulWidget {
+class SearchInputWidget extends StatefulWidget {
+  final String hintText;
   final TextEditingController controller;
-  const SearchFieldWidget({super.key, required this.controller});
+  final void Function(String query)? onSearch;
+  const SearchInputWidget({
+    super.key,
+    required this.hintText,
+    this.onSearch,
+    required this.controller,
+  });
 
   @override
-  State<SearchFieldWidget> createState() => _SearchFieldWidgetState();
+  State<SearchInputWidget> createState() => _SearchInputWidgetState();
 }
 
-class _SearchFieldWidgetState extends State<SearchFieldWidget> {
+class _SearchInputWidgetState extends State<SearchInputWidget> {
+  late TextEditingController searchCtrl;
+  bool isSearching = false;
+  Timer? debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    searchCtrl = widget.controller;
+  }
+
+  @override
+  void dispose() {
+    searchCtrl.dispose();
+    debounce?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: widget.controller,
+      controller: searchCtrl,
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.search),
-        hintText: 'Buscar Ativo ou Local',
-        suffixIcon: widget.controller.text.isNotEmpty
+        hintText: widget.hintText,
+        suffixIcon: isSearching
             ? IconButton(
                 onPressed: () {
-                  widget.controller.clear();
+                  setState(() {
+                    searchCtrl.clear();
+                    isSearching = false;
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    if (widget.onSearch != null) widget.onSearch!('');
+                  });
                 },
-                icon: const Icon(
-                  Icons.clear,
-                ),
+                icon: const Icon(Icons.clear),
               )
             : null,
       ),
+      onChanged: (value) {
+        setState(() {
+          isSearching = value.trim().isNotEmpty;
+        });
+        debounce?.cancel();
+        debounce = Timer(const Duration(milliseconds: 600), () {
+          if (widget.onSearch != null) widget.onSearch!(value);
+        });
+      },
     );
   }
 }

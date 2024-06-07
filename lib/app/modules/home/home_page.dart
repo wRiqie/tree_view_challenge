@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tree_view_challenge/app/core/values/app_images.dart';
 
 import '../../../routes/app_pages.dart';
 import '../../data/models/args/assets_args.dart';
@@ -11,7 +12,7 @@ class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('Unidades')),
+        appBar: AppBar(title: Image.asset(AppImages.logoTractian)),
         body: Stack(
           children: [
             Obx(

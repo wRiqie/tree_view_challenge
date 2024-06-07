@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tree_view_challenge/app/widgets/empty_placeholder_widget.dart';
+import 'package:tree_view_challenge/app/widgets/search_field_widget.dart';
 import 'package:tree_view_challenge/app/widgets/tree_node_widget.dart';
 
 import 'assets_controller.dart';
@@ -18,22 +19,10 @@ class AssetsPage extends GetView<AssetsController> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(18, 20, 18, 6),
-                child: TextField(
+                child: SearchInputWidget(
+                  hintText: 'Buscar Ativo ou Local',
                   controller: controller.searchCtrl,
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search),
-                    hintText: 'Buscar Ativo ou Local',
-                    suffixIcon: controller.searchCtrl.text.isNotEmpty
-                        ? IconButton(
-                            onPressed: () {
-                              controller.searchCtrl.clear();
-                            },
-                            icon: const Icon(
-                              Icons.clear,
-                            ),
-                          )
-                        : null,
-                  ),
+                  onSearch: (_) => controller.onSearch(),
                 ),
               ),
               const SizedBox(
@@ -71,7 +60,6 @@ class AssetsPage extends GetView<AssetsController> {
               const Divider(
                 color: Colors.grey,
               ),
-              // TODO expand all button
               Expanded(
                 child: Obx(() {
                   if (!controller.isLoading.value) {

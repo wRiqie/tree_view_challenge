@@ -39,7 +39,6 @@ class AssetsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    searchCtrl.addListener(_searchListener);
     scheduleMicrotask(loadData);
   }
 
@@ -138,6 +137,14 @@ class AssetsController extends GetxController {
     }
   }
 
+  void onSearch() {
+    if (searchCtrl.text.trim().isNotEmpty || isFiltering) {
+      _filter();
+    } else {
+      filteredNodes.clear();
+    }
+  }
+
   void _filter() {
     final query = searchCtrl.text.trim().isNotEmpty ? searchCtrl.text : null;
     Set<TreeNodeModel> results = {};
@@ -195,16 +202,5 @@ class AssetsController extends GetxController {
 
     var a = nodes.expand(filterNodes).toList();
     filteredNodes.value = a;
-  }
-
-  void _searchListener() {
-    _debounceTimer?.cancel();
-    _debounceTimer = Timer(const Duration(milliseconds: 1500), () {
-      if (searchCtrl.text.trim().isNotEmpty || isFiltering) {
-        _filter();
-      } else {
-        filteredNodes.clear();
-      }
-    });
   }
 }
