@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -18,6 +17,8 @@ class AssetsController extends GetxController {
   final filteredNodes = RxList<TreeNodeModel>();
 
   final isLoading = RxBool(false);
+
+  final hasErrors = RxBool(false);
 
   final AssetRepository _assetRepository;
   final LocationRepository _locationRepository;
@@ -50,6 +51,7 @@ class AssetsController extends GetxController {
   }
 
   Future<void> loadData() async {
+    hasErrors.value = false;
     isLoading.value = true;
     await _loadAssets();
     await _loadLocations();
@@ -61,6 +63,8 @@ class AssetsController extends GetxController {
     var response = await _assetRepository.getAll(args.companyId);
     if (response.isSuccess) {
       assets = response.data ?? [];
+    } else {
+      hasErrors.value = true;
     }
   }
 
@@ -68,6 +72,8 @@ class AssetsController extends GetxController {
     var response = await _locationRepository.getAll(args.companyId);
     if (response.isSuccess) {
       locations = response.data ?? [];
+    } else {
+      hasErrors.value = true;
     }
   }
 

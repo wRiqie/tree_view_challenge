@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tree_view_challenge/app/widgets/error_placeholder_widget.dart';
 
 import '../../../routes/app_pages.dart';
 import '../../core/values/app_images.dart';
@@ -15,51 +16,62 @@ class HomePage extends GetView<HomeController> {
         appBar: AppBar(title: Image.asset(AppImages.logoTractian)),
         body: Stack(
           children: [
-            Obx(
-              () => Padding(
-                padding: const EdgeInsets.fromLTRB(18, 20, 18, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text('Selecione a unidade'),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    Expanded(
-                      child: ListView.separated(
-                        itemCount: controller.companies.length,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: 14),
-                        itemBuilder: (context, index) {
-                          var company = controller.companies[index];
-                          return ListTile(
-                            tileColor: Colors.blue,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4)),
-                            onTap: () => Get.toNamed(
-                              AppRoutes.assets,
-                              arguments: AssetsArgs(companyId: company.id),
-                            ),
-                            leading: const Icon(
-                              Icons.apartment,
-                              color: Colors.white,
-                            ),
-                            trailing: const Icon(
-                              Icons.chevron_right,
-                              color: Colors.white,
-                            ),
-                            title: Text(
-                              '${company.name} Unit',
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                          );
-                        },
+            Obx(() {
+              if (controller.isLoading.value) {
+                return const SizedBox();
+              } else if (controller.companies.isNotEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 20, 18, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text('Selecione a unidade'),
+                      const SizedBox(
+                        height: 12,
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                      Expanded(
+                        child: ListView.separated(
+                          itemCount: controller.companies.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 14),
+                          itemBuilder: (context, index) {
+                            var company = controller.companies[index];
+                            return ListTile(
+                              tileColor: Colors.blue,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4)),
+                              onTap: () => Get.toNamed(
+                                AppRoutes.assets,
+                                arguments: AssetsArgs(companyId: company.id),
+                              ),
+                              leading: const Icon(
+                                Icons.apartment,
+                                color: Colors.white,
+                              ),
+                              trailing: const Icon(
+                                Icons.chevron_right,
+                                color: Colors.white,
+                              ),
+                              title: Text(
+                                '${company.name} Unit',
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return Center(
+                    child: ErrorPlaceholderWidget(
+                  caption:
+                      'Ocorreu um erro, verifique sua conexão e tente novamente',
+                  onReload: controller.loadCompanies,
+                ));
+              }
+            }),
             Obx(
               () => Visibility(
                 visible: controller.isLoading.value,

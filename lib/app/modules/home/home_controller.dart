@@ -16,10 +16,10 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _loadCompanies();
+    loadCompanies();
   }
 
-  void _loadCompanies() async {
+  void loadCompanies() async {
     isLoading.value = true;
     final response = await _companyRepository.getAll();
     if (response.isSuccess) {

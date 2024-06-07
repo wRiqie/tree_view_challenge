@@ -6,11 +6,13 @@ class SearchInputWidget extends StatefulWidget {
   final String hintText;
   final TextEditingController controller;
   final void Function(String query)? onSearch;
+  final bool isEnabled;
   const SearchInputWidget({
     super.key,
     required this.hintText,
     this.onSearch,
     required this.controller,
+    this.isEnabled = true,
   });
 
   @override
@@ -39,6 +41,7 @@ class _SearchInputWidgetState extends State<SearchInputWidget> {
   Widget build(BuildContext context) {
     return TextField(
       controller: searchCtrl,
+      enabled: widget.isEnabled,
       decoration: InputDecoration(
         prefixIcon: const Icon(Icons.search),
         hintText: widget.hintText,

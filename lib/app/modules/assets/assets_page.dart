@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tree_view_challenge/app/widgets/error_placeholder_widget.dart';
 
 import '../../widgets/empty_placeholder_widget.dart';
 import '../../widgets/search_field_widget.dart';
@@ -17,12 +18,15 @@ class AssetsPage extends GetView<AssetsController> {
         children: [
           Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(18, 20, 18, 6),
-                child: SearchInputWidget(
-                  hintText: 'Buscar Ativo ou Local',
-                  controller: controller.searchCtrl,
-                  onSearch: (_) => controller.onSearch(),
+              Obx(
+                () => Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 20, 18, 6),
+                  child: SearchInputWidget(
+                    hintText: 'Buscar Ativo ou Local',
+                    controller: controller.searchCtrl,
+                    onSearch: (_) => controller.onSearch(),
+                    isEnabled: !controller.hasErrors.value,
+                  ),
                 ),
               ),
               const SizedBox(
@@ -37,7 +41,9 @@ class AssetsPage extends GetView<AssetsController> {
                         icon: Icons.bolt_outlined,
                         title: 'Sensor de Energia',
                         isSelected: controller.isFilteringEnergy.value,
-                        onTap: () => controller.toggleFilterEnergy(),
+                        onTap: !controller.hasErrors.value
+                            ? () => controller.toggleFilterEnergy()
+                            : () {},
                       ),
                     ),
                     const SizedBox(
@@ -48,7 +54,9 @@ class AssetsPage extends GetView<AssetsController> {
                         icon: Icons.info_outline,
                         title: 'Crítico',
                         isSelected: controller.isFilteringCritical.value,
-                        onTap: () => controller.toggleFilterCritical(),
+                        onTap: !controller.hasErrors.value
+                            ? () => controller.toggleFilterCritical()
+                            : () {},
                       ),
                     ),
                   ],
@@ -62,35 +70,44 @@ class AssetsPage extends GetView<AssetsController> {
               ),
               Expanded(
                 child: Obx(() {
-                  if (!controller.isLoading.value) {
-                    if ((controller.nodes.isNotEmpty &&
-                            !controller.isFiltering) ||
-                        (controller.filteredNodes.isNotEmpty &&
-                            controller.isFiltering)) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 30),
-                        child: ListView.builder(
-                          itemCount: controller.isFiltering
-                              ? controller.filteredNodes.length
-                              : controller.nodes.length,
-                          itemBuilder: (context, index) {
-                            var treeNode = controller.isFiltering
-                                ? controller.filteredNodes[index]
-                                : controller.nodes[index];
-                            return TreeNodeWidget(
-                              treeNode: treeNode,
-                              indent: 20,
-                            );
-                          },
-                        ),
-                      );
-                    } else {
-                      return const Center(
-                        child: EmptyPlaceholderWidget(),
-                      );
-                    }
+                  if (controller.hasErrors.value) {
+                    return Center(
+                        child: ErrorPlaceholderWidget(
+                      caption:
+                          'Ocorreu um erro, verifique sua conexão e tente novamente',
+                      onReload: controller.loadData,
+                    ));
                   } else {
-                    return Container();
+                    if (!controller.isLoading.value) {
+                      if ((controller.nodes.isNotEmpty &&
+                              !controller.isFiltering) ||
+                          (controller.filteredNodes.isNotEmpty &&
+                              controller.isFiltering)) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 30),
+                          child: ListView.builder(
+                            itemCount: controller.isFiltering
+                                ? controller.filteredNodes.length
+                                : controller.nodes.length,
+                            itemBuilder: (context, index) {
+                              var treeNode = controller.isFiltering
+                                  ? controller.filteredNodes[index]
+                                  : controller.nodes[index];
+                              return TreeNodeWidget(
+                                treeNode: treeNode,
+                                indent: 20,
+                              );
+                            },
+                          ),
+                        );
+                      } else {
+                        return const Center(
+                          child: EmptyPlaceholderWidget(),
+                        );
+                      }
+                    } else {
+                      return Container();
+                    }
                   }
                 }),
               ),
