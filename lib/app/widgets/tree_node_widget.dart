@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tree_view_challenge/app/data/models/tree_node_model.dart';
 
 class TreeNode {
   final Widget? leading;
@@ -15,7 +16,7 @@ class TreeNode {
 }
 
 class TreeNodeWidget extends StatefulWidget {
-  final TreeNode treeNode;
+  final TreeNodeModel treeNode;
   final double indent;
   const TreeNodeWidget({super.key, required this.treeNode, this.indent = 0});
 

@@ -11,15 +11,6 @@ extension StringListExt on List<String> {
   }
 }
 
-extension ListExt<T> on List<T> {
-  T? firstWhereOrNull(bool Function(T element) test) {
-    for (var element in this) {
-      if (test(element)) return element;
-    }
-    return null;
-  }
-}
-
 extension MapExt<K, V> on Map<K, V> {
   void addAllNotNull(Map<K, V> map) {
     for (var entry in map.entries) {

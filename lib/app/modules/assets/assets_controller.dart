@@ -2,22 +2,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:tree_view_challenge/app/data/models/args/assets_args.dart';
 import 'package:tree_view_challenge/app/data/models/asset_model.dart';
 import 'package:tree_view_challenge/app/data/repository/asset_repository.dart';
 import 'package:tree_view_challenge/app/data/repository/location_repository.dart';
-import 'package:tree_view_challenge/app/widgets/tree_node_widget.dart';
 
-import '../../core/values/app_images.dart';
 import '../../data/models/location_model.dart';
 import '../../data/models/tree_node_model.dart';
 
 class AssetsController extends GetxController {
   List<AssetModel> assets = [];
   List<LocationModel> locations = [];
-  final nodes = RxList<TreeNode>();
+  final nodes = RxList<TreeNodeModel>();
 
   final isLoading = RxBool(false);
 
@@ -68,75 +65,71 @@ class AssetsController extends GetxController {
   }
 
   void _buildTree() {
-    List<TreeNode> nodes = [];
+    List<TreeNodeModel> treeNodes = [];
     Map<String, TreeNodeModel> nodeMap = {};
 
     locations.sort((a, b) => b.name.compareTo(a.name));
     assets.sort((a, b) => b.name.compareTo(a.name));
 
-    // Criar map de root
+    // Create map of all items [Locations e assets]
     for (var location in locations) {
-      nodeMap[location.id] = TreeNodeModel<LocationModel>(location);
+      nodeMap[location.id] =
+          TreeNodeModel<LocationModel>(node: location, title: location.name);
     }
     for (var asset in assets) {
-      nodeMap[asset.id] = TreeNodeModel<AssetModel>(asset);
+      nodeMap[asset.id] =
+          TreeNodeModel<AssetModel>(node: asset, title: asset.name);
     }
 
+    // Organize items with their children
     List<TreeNodeModel> roots = [];
 
-    // Transformar em lista aninhada
     for (var treeNode in nodeMap.values) {
       var node = treeNode.node;
       if (node is AssetModel) {
-        if (node.parentId != null) {
-          var parentNode = nodeMap[node.parentId];
-          if (parentNode != null) {
-            parentNode.children.add(treeNode);
-          }
-        } else if (node.locationId != null) {
-          var parentNode = nodeMap[node.locationId];
-          if (parentNode != null) {
-            parentNode.children.add(treeNode);
-          }
-        } else {
-          roots.add(treeNode);
-        }
+        String? parentId = node.parentId ?? node.locationId;
+        addNodeToParentOrRoot(treeNode, parentId, nodeMap, roots);
       } else if (node is LocationModel) {
-        if (node.parentId == null) {
-          roots.add(treeNode);
-        } else {
-          var parentNode = nodeMap[node.parentId];
-          if (parentNode != null) {
-            parentNode.children.add(treeNode);
-          }
-        }
+        addNodeToParentOrRoot(treeNode, node.parentId, nodeMap, roots);
       }
     }
 
-    // Transformar lista em widget
+    // Transform model list in widget list
     nodes.clear();
-    for (var node in roots) {
-      nodes.add(_buildNode(node));
-    }
-    this.nodes.value = nodes;
+    // for (var node in roots) {
+    //   treeNodes.add(_buildNode(node));
+    // }
+    nodes.value = roots;
   }
 
-  TreeNode _buildNode(TreeNodeModel treeNode) {
-    var node = treeNode.node;
-    if (node is AssetModel) {
-      return TreeNode(
-        title: node.name,
-        leading: SvgPicture.asset(node.getIcon()),
-        children: treeNode.children.map((e) => _buildNode(e)).toList(),
-      );
+  void addNodeToParentOrRoot(TreeNodeModel treeNode, String? parentId,
+      Map<String, TreeNodeModel> nodeMap, List<TreeNodeModel> roots) {
+    if (parentId != null) {
+      var parentNode = nodeMap[parentId];
+      if (parentNode != null) {
+        parentNode.children.add(treeNode);
+      }
     } else {
-      return TreeNode(
-        title: node.name,
-        leading: SvgPicture.asset(AppImages.pin),
-        children: treeNode.children.map((e) => _buildNode(e)).toList(),
-      );
+      roots.add(treeNode);
     }
   }
+
+  // TreeNode _buildNode(TreeNodeModel treeNode) {
+  //   var node = treeNode.node;
+  //   if (node is AssetModel) {
+  //     return TreeNode(
+  //       title: node.name,
+  //       leading: SvgPicture.asset(node.getIcon()),
+  //       children: treeNode.children.map((e) => _buildNode(e)).toList(),
+  //     );
+  //   } else {
+  //     return TreeNode(
+  //       title: node.name,
+  //       leading: SvgPicture.asset(AppImages.pin),
+  //       children: treeNode.children.map((e) => _buildNode(e)).toList(),
+  //     );
+  //   }
+  // }
 
   void _searchListener() {
     _debounceTimer?.cancel();

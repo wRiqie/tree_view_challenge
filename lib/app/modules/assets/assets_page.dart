@@ -52,6 +52,7 @@ class AssetsPage extends GetView<AssetsController> {
               const Divider(
                 color: Colors.grey,
               ),
+              // TODO expand all button
               Expanded(
                 child: Obx(() {
                   if (!controller.isLoading.value) {

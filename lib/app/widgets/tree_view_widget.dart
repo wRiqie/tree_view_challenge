@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:tree_view_challenge/app/data/models/tree_node_model.dart';
 
 import 'tree_node_widget.dart';
 
 class TreeViewWidget extends StatefulWidget {
-  final List<TreeNode> nodes;
+  final List<TreeNodeModel> nodes;
   final double indent;
   const TreeViewWidget({super.key, this.nodes = const [], this.indent = 20});
 
