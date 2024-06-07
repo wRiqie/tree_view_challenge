@@ -1,9 +1,10 @@
-import '../models/error_model.dart';
 import '../models/default_response_model.dart';
+import '../models/error_model.dart';
 
 class ExecuteService {
   ExecuteService._();
 
+  /// Used to convert Response in defaultReponseModel [Success or error]
   static Future<DefaultResponseModel<T>> tryExecuteAsync<T>(
       Future<T?> Function() execute) async {
     try {

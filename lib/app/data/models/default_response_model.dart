@@ -1,6 +1,5 @@
 import 'error_model.dart';
 
-// Para requisições externas
 class DefaultResponseModel<T> {
   final T? data;
   final ErrorModel? error;

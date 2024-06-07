@@ -1,6 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
-import 'package:flutter/foundation.dart';
 
 import '../../../core/values/constants.dart';
 import '../../adapters/dio_error_adapter.dart';
@@ -25,14 +23,6 @@ class HttpServiceDioImp implements HttpService {
       headers: headers,
       contentType: contentType,
     ));
-
-    if (kDebugMode) {
-      (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
-          (dioClient) {
-        dioClient.badCertificateCallback = (cert, host, port) => true;
-        return dioClient;
-      };
-    }
 
     return dio;
   }
