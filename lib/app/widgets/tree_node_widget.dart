@@ -14,7 +14,7 @@ class TreeNodeWidget extends StatefulWidget {
 }
 
 class _TreeNodeWidgetState extends State<TreeNodeWidget> {
-  bool isExpanded = true;
+  bool isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +53,9 @@ class _TreeNodeWidgetState extends State<TreeNodeWidget> {
               )),
             ],
           ),
-          trailing: widget.treeNode.trailing,
+          // trailing: widget.treeNode.trailing,
         ),
-        if (widget.treeNode.children.isNotEmpty && isExpanded)
+        if (hasChildren && isExpanded)
           ...widget.treeNode.children.map(
             (e) => TreeNodeWidget(treeNode: e, indent: widget.indent + 20),
           )

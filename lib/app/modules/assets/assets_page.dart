@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tree_view_challenge/app/widgets/empty_placeholder_widget.dart';
-import 'package:tree_view_challenge/app/widgets/tree_view_widget.dart';
+import 'package:tree_view_challenge/app/widgets/tree_node_widget.dart';
 
 import 'assets_controller.dart';
 
@@ -16,10 +16,11 @@ class AssetsPage extends GetView<AssetsController> {
         children: [
           Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.fromLTRB(18, 20, 18, 6),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(18, 20, 18, 6),
                 child: TextField(
-                  decoration: InputDecoration(
+                  controller: controller.searchCtrl,
+                  decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.search),
                     hintText: 'Buscar Ativo ou Local',
                   ),
@@ -57,18 +58,15 @@ class AssetsPage extends GetView<AssetsController> {
                 child: Obx(() {
                   if (!controller.isLoading.value) {
                     if (controller.nodes.isNotEmpty) {
-                      return SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            TreeViewWidget(
-                              nodes: controller.nodes,
-                            ),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                          ],
-                        ),
+                      return ListView.builder(
+                        itemCount: controller.nodes.length,
+                        itemBuilder: (context, index) {
+                          var treeNode = controller.nodes[index];
+                          return TreeNodeWidget(
+                            treeNode: treeNode,
+                            indent: 20,
+                          );
+                        },
                       );
                     } else {
                       return const Center(

@@ -107,10 +107,59 @@ class AssetsController extends GetxController {
     }
   }
 
+  List<TreeNodeModel> _search(String searchTerm) {
+    Set<TreeNodeModel> results = {};
+
+    void searchTree(TreeNodeModel node, Set<TreeNodeModel> currentPath) {
+      if (node.title.toLowerCase().contains(searchTerm.toLowerCase())) {
+        results.addAll(currentPath);
+        results.add(node);
+      }
+      for (var child in node.children) {
+        var newPath = {...currentPath, node};
+        searchTree(child, newPath);
+      }
+    }
+
+    // Add root nodes and search
+    for (var root in nodes) {
+      searchTree(root, {});
+    }
+
+    // Remove redundant nodes and construct the final tree
+    List<TreeNodeModel> filterNodes(TreeNodeModel node) {
+      if (results.contains(node)) {
+        return [
+          TreeNodeModel(
+            node: node,
+            title: node.title,
+          )..children = node.children.expand(filterNodes).toList(),
+        ];
+      }
+      var relevantChildren = node.children.expand(filterNodes).toList();
+      if (relevantChildren.isNotEmpty) {
+        return [
+          TreeNodeModel(
+            node: node,
+            title: node.title,
+          )..children = relevantChildren
+        ];
+      }
+      return [];
+    }
+
+    nodes.value = nodes.expand(filterNodes).toList();
+    return nodes.expand(filterNodes).toList();
+  }
+
   void _searchListener() {
     _debounceTimer?.cancel();
-    _debounceTimer = Timer(const Duration(seconds: 2), () {
-      _buildTree();
+    _debounceTimer = Timer(const Duration(milliseconds: 1500), () {
+      if (searchCtrl.text.trim().isNotEmpty) {
+        _search(searchCtrl.text);
+      } else {
+        _buildTree();
+      }
     });
   }
 }
