@@ -6,7 +6,8 @@ An app that displays assets and locations in a tree view
 
 1. [Introduction](#introduction)
 2. [Tecnologies](#tecnologies)
-3. [Links](#links)
+3. [Improves if i had more time](#improves-if-i-had-more-time)
+4. [Links](#links)
 
 ## Introduction
 This app was developed as part of a challenge. The challenge involved creating an app that loaded company units, and through them loaded assets and locations to be displayed in a hierarchical tree format.
