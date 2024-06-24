@@ -6,7 +6,8 @@ An app that displays assets and locations in a tree view
 
 1. [Introduction](#introduction)
 2. [Tecnologies](#tecnologies)
-3. [Links](#links)
+3. [Improves if i had more time](#improves-if-i-had-more-time)
+4. [Links](#links)
 
 ## Introduction
 This app was developed as part of a challenge. The challenge involved creating an app that loaded company units, and through them loaded assets and locations to be displayed in a hierarchical tree format.
@@ -28,6 +29,10 @@ This app was developed as part of a challenge. The challenge involved creating a
 4. In the terminal in the project's [tree_view_challenge] folder run `flutter pub get` to synchronize the project's dependencies
 
 5. Still in the terminal, run the command `flutter run` to run the project
+
+## Improves if i had more time
+- I would improve the ui, probably creating a own figma prototype
+- I would implement unit tests
 
 ## Links
 - __App Video__: https://youtube.com/shorts/rtkHwIkvUhQ
