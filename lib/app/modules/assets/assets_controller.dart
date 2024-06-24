@@ -206,7 +206,6 @@ class AssetsController extends GetxController {
       return [];
     }
 
-    var a = nodes.expand(filterNodes).toList();
-    filteredNodes.value = a;
+    filteredNodes.value = nodes.expand(filterNodes).toList();
   }
 }
